@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "outDir": "wwwroot/dist", // <--- newly added configuration parameter
+        "target": "es5",
+        "module": "commonjs",
+        "sourceMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+        "removeComments": false,
+        "noImplicitAny": false,
+        "noEmitOnError": true,
+        "suppressImplicitAnyIndexErrors": true
+    },
+    "exclude": [
+        "node_modules",
+        "wwwroot"
+    ],
+    "filesGlob": [
+        "app/**/*.ts",
+        "typings/browser.d.ts"
+    ]
+}
