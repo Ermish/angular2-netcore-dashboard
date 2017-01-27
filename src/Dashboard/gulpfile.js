@@ -35,6 +35,7 @@ var chalk = require('chalk'),
     sass = require('gulp-sass'),
 
     //html
+    pug = require('gulp-pug'),
     htmlmin = require('gulp-htmlmin'),
     htmlpostcss = require('gulp-html-postcss');
 
@@ -47,22 +48,22 @@ var cleanAll = function (cb) {
 }
 
 var cleanCss = function (cb) {
-    del.sync(['./wwwroot/css/**/*']);
-    console.log(chalk.cyan('Cleaned up css folder'));
+    del.sync(['./wwwroot/sass/**/*']);
+    console.log(chalk.cyan('Cleaned up sass folder'));
     if (typeof cb === 'function')
         cb();
 }
 
 var cleanJs = function (cb) {
-    del.sync(['./wwwroot/js/**/*']);
-    console.log(chalk.cyan('Cleaned up js folder'));
+    del.sync(['./wwwroot/ts/**/*']);
+    console.log(chalk.cyan('Cleaned up ts folder'));
     if (typeof cb === 'function')
         cb();
 }
 
 var cleanHtml = function (cb) {
-    del.sync(['./wwwroot/html/**/*']);
-    console.log(chalk.cyan('Cleaned up views folder'));
+    del.sync(['./wwwroot/jade/**/*']);
+    console.log(chalk.cyan('Cleaned up jade folder'));
     if (typeof cb === 'function')
         cb();
 }
@@ -70,8 +71,8 @@ var cleanHtml = function (cb) {
 var processComponentsCss = function () {
     return gulp.src('app/components/**/*.scss', { base: '.' })
         .pipe(logger({
-            before: 'Starting to process scss files in components...',
-            after: 'Done processing scss files!',
+            before: 'Starting to process component scss files...',
+            after: 'Done processing component scss files!',
             showChange: true
         }))
         .pipe(sass().on('error', sass.logError))
@@ -85,7 +86,7 @@ var processComponentsCss = function () {
 
 
 var processCss = function(isMinimal) {
-    return gulp.src('app/css/**/*.scss')
+    return gulp.src('app/sass/**/*.scss')
         .pipe(logger({
             before: 'Starting to process scss files...',
             after: 'Done processing scss files!',
@@ -104,17 +105,19 @@ var processCss = function(isMinimal) {
 };
 
 var processJs = function(isMinimal) {
-    return gulp.src('app/js/app.js')
+    return gulp.src('app/ts/**/*.ts')
         .pipe(logger({
             before: 'Starting to process js files...',
             after: 'Done processing js files!',
             showChange: true
         }))
         .pipe(sourcemaps.init())
-        .pipe(typescript(typescriptProj))
+        .pipe(typescriptProj())
         .pipe(sourcemaps.write('.'))      // <--- sourcemaps
-        .pipe(tslint())
-        .pipe(tslint.report('verbose'))
+        .pipe(tslint({
+            formatter: "verbose"
+        }))
+        .pipe(tslint.report())
         //.pipe(webpack({
         //    entry: {
         //        app: './app/js/app.js'
@@ -149,24 +152,20 @@ var processHtml = function (isMinimal) {
     var jsFilter = filter('**/*.js', { restore: true });
 
     if (isMinimal) {
-        return gulp.src('app/html/**/*.html')
-            .pipe(logger({
-                before: 'Starting to process html files...',
-                after: 'Done processing html files!',
-                showChange: true
-            }))
-            .pipe(gulp.dest('wwwroot/html'));
     }
     
-    return gulp.src('app/html/**/*.html')
+    return gulp.src('app/jade/**/*.jade')
         .pipe(logger({
-            before: 'Starting to process html files...',
-            after: 'Done processing hmtl files!',
+            before: 'Starting to process jade files...',
+            after: 'Done processing jade files!',
             showChange: true
         }))
-        .pipe(
-        //DO ANGULAR 2 STuff
-         )
+        //.pipe(
+        ////DO ANGULAR 2 STuff
+        // )
+        .pipe(pug({
+            // Your options in here. 
+        }))
         .pipe(rename({ dirname: '' })) //flattens folder structure
 
 
